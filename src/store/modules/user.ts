@@ -133,16 +133,12 @@ export const useUserStore = defineStore({
         this.setSessionTimeout(false);
       } else {
         const permissionStore = usePermissionStore();
-        console.log('permissionStore', permissionStore.isDynamicAddedRoute);
-        // if (!permissionStore.isDynamicAddedRoute) {
         const routes = await permissionStore.buildRoutesAction(id);
-        console.log('routes', routes);
         routes.forEach((route) => {
           router.addRoute(route as unknown as RouteRecordRaw);
         });
         router.addRoute(PAGE_NOT_FOUND_ROUTE as unknown as RouteRecordRaw);
         permissionStore.setDynamicAddedRoute(true);
-        // }
         await router.replace(this.userInfo?.homePath || PageEnum.BASE_HOME);
       }
     },

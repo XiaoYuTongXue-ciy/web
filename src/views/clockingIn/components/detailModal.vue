@@ -127,6 +127,7 @@
         if (pass) {
           currentEditKeyRef.value = '';
         }
+        reload();
         msg.success({ content: '数据已保存', key: 'saving' });
       } catch (error) {
         msg.error({ content: '保存失败', key: 'saving' });

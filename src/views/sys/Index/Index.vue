@@ -22,25 +22,13 @@
       />
     </div>
     <div class="content">
-      <div
-        @click="handleLogin(menuModules[0].id)"
-        class="menu"
-        style="background: url('https://xfyh.veducation.cn/img/menu4.e21b2de4.png') no-repeat"
-      >
+      <div @click="handleLogin(menuModules[0].id)" class="menu">
         <span>{{ menuModules[0]?.title }}</span>
       </div>
-      <div
-        @click="handleLogin(menuModules[1].id)"
-        class="menu"
-        style="background: url('https://xfyh.veducation.cn/img/menu2.955c5d3f.png') no-repeat"
-      >
+      <div @click="handleLogin(menuModules[1].id)" class="menu">
         <span>{{ menuModules[1]?.title }}</span>
       </div>
-      <div
-        @click="handleLogin(menuModules[2].id)"
-        class="menu"
-        style="background: url('https://xfyh.veducation.cn/img/menu3.0275be06.png') no-repeat"
-      >
+      <div @click="handleLogin(menuModules[2].id)" class="menu">
         <span>{{ menuModules[2]?.title }}</span>
       </div>
     </div>
@@ -67,9 +55,7 @@
   loadMenuModule();
 
   const handleLogin = async (moduleId) => {
-    console.log('handleLogin', moduleId);
     localStorage.setItem('moduleId', moduleId);
-    // localeStro.set('moduleId', moduleId);
     await usePermission.setCurrentModule(moduleId);
     await userStore.loadChildMenu(moduleId);
   };
@@ -164,15 +150,25 @@
         position: relative;
         width: 12rem;
         height: 15rem;
-        // padding: 1px;
         transition: 0.7s;
         border-radius: 1rem;
         background-size: cover !important;
-        //     background-size: 13.5rem 16.5rem !important;
         cursor: pointer;
 
         &:hover {
           transform: scale(1.1);
+        }
+
+        &:nth-child(1) {
+          background: url('@/assets/images/menu4.png');
+        }
+
+        &:nth-child(2) {
+          background: url('@/assets/images/menu2.png');
+        }
+
+        &:nth-child(3) {
+          background: url('@/assets/images/menu3.png');
         }
 
         span {
