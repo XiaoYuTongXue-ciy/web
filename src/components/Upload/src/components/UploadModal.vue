@@ -180,7 +180,7 @@
           },
           file: item.file,
           name: props.name,
-          filename: props.filename,
+          filename: item.name,
         },
         function onUploadProgress(progressEvent: ProgressEvent) {
           const complete = ((progressEvent.loaded / progressEvent.total) * 100) | 0;

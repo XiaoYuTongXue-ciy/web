@@ -4,12 +4,12 @@
       <template #toolbar>
         <div class="wrap">
           <div class="wrap-box">
-            <BasicUpload :maxSize="20" :maxNumber="10" @change="handleChange" :api="getInput" />
+            <BasicUpload :maxSize="20" :maxNumber="10" @change="handleChange" :api="uploadFile" />
             <a-button type="primary" class="export" @click="getExportData"> 导出 </a-button>
             <a-button type="primary" class="download"> 模板下载 </a-button>
           </div>
         </div>
-        <a-button type="primary" @click="handleCreate"> 新增教材信息 </a-button>
+        <a-button type="primary" @click="handleCreate"> 新增老师信息 </a-button>
       </template>
       <template #bodyCell="{ column, record }">
         <template v-if="column.key === 'action'">
@@ -40,14 +40,13 @@
   import { BasicTable, useTable, TableAction } from '@/components/Table';
   import { BasicUpload } from '/@/components/Upload';
   import { downloadByData } from '/@/utils/file/download';
-  import { getPageInfo, deleteItem, getExport, getInput } from '@/api/teachingmaterial';
+  import { getPageInfo, deleteItem } from '@/api/teacher';
 
   import { useDrawer } from '@/components/Drawer';
   import DetailDrawer from './detailDrawer.vue';
 
   import { columns, searchFormSchema } from './config';
   import { useMessage } from '@/hooks/web/useMessage';
-  import dayjs from 'dayjs';
 
   const { notification } = useMessage();
 
@@ -112,21 +111,15 @@
   async function getExportData() {
     const data = await getExport({});
     // data 为接口返回文件流数据，如果你的接口嵌套一层那就逐层去取
-    const currentTime = dayjs();
-    const formattedTime = currentTime.format('YYYYMMDDHHmmss');
-    downloadByData(data, `教材${formattedTime}.xlsx`);
+    downloadByData(data, '学生学籍信息.xlsx');
   }
-  const handleChange = (list) => {
-    console.log(createMessage.info(`已上传文件${JSON.stringify(list)}`));
-    createMessage.info(`已上传文件${JSON.stringify(list)}`);
-  };
 </script>
 <style scoped lang="less">
   .wrap {
     display: flex;
     align-items: center;
     justify-content: flex-end;
-    width: 20rem;
+    width: 18rem;
     margin-right: 3rem;
 
     .wrap-box {

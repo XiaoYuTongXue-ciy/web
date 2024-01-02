@@ -5,6 +5,7 @@ import { getPageInfo as stugetPageInfo } from '@/api/stuInfo'; // 学生
 import { getPageInfo as enterpriseGetPageInfo } from '@/api/internshipenterprisesetting'; // 企业
 import { getPageInfo } from '@/api/sysUser'; // 老师
 import { useDictStore } from '@/store/modules/dict.js';
+import { searchParams, onSearch } from '@/utils/Search';
 
 const dictStore = useDictStore();
 
@@ -111,7 +112,7 @@ export const addFormSchema: FormSchema[] = [
     slot: '',
   },
   {
-    field: 'enterpriseInfoId',
+    field: 'enterpriseId',
     label: '实习企业',
     component: 'ApiSelect',
     colProps: { span: 15 },
@@ -119,7 +120,7 @@ export const addFormSchema: FormSchema[] = [
     componentProps: {
       api: enterpriseGetPageInfo,
       resultField: 'items',
-      labelField: 'companyName',
+      labelField: 'unitName',
       valueField: 'id',
     },
   },
@@ -139,24 +140,27 @@ export const addFormSchema: FormSchema[] = [
     field: 'studentId',
     label: '姓名',
     component: 'ApiSelect',
-    rules: [{ required: true }],
+    required: true,
     colProps: { span: 15 },
     componentProps: {
+      immediate: true,
       showSearch: true,
+      filterOption: false,
       api: stugetPageInfo,
       resultField: 'items',
+      params: searchParams,
+      onInput: onSearch,
       labelField: 'nameAndNumber',
-      valueField: 'nameAndNumber',
+      valueField: 'id',
     },
   },
-  {
-    field: '',
-    label: '实习岗位',
-    colProps: { span: 15 },
-    rules: [{ required: true }],
-    component: 'Input',
-  },
-
+  // {
+  //   field: '',
+  //   label: '实习岗位',
+  //   colProps: { span: 15 },
+  //   rules: [{ required: true }],
+  //   component: 'Input',
+  // },
   {
     field: 'remark',
     label: '备注',

@@ -4,19 +4,9 @@ import { getPageInfo as classesgetPageInfo } from '@/api/classes'; // 班级
 import { getPageInfo as stugetPageInfo } from '@/api/stuInfo'; // 学生
 import { getPageInfo as codegetPageInfo } from '@/api/codeofconduct'; // 行为项目
 import { useDictStore } from '@/store/modules/dict.js';
-import { debounce } from 'lodash-es';
-import { computed, unref, ref } from 'vue';
+import { searchParams, onSearch } from '@/utils/Search';
 
 const dictStore = useDictStore();
-const keyword = ref<string>('');
-const searchParams = computed<Recordable<string>>(() => {
-  return { Name: unref(keyword) };
-});
-
-const onSearch = debounce((e) => {
-  console.log(e.target._value);
-  keyword.value = e.target._value;
-}, 1000);
 
 export const columns: BasicColumn[] = [
   {
@@ -183,6 +173,7 @@ export const addFormSchema: FormSchema[] = [
     componentProps: {
       immediate: true,
       showSearch: true,
+      filterOption: false,
       api: stugetPageInfo,
       resultField: 'items',
       params: searchParams,

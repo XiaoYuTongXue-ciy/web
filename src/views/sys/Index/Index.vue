@@ -22,13 +22,25 @@
       />
     </div>
     <div class="content">
-      <div @click="handleLogin(menuModules[0].id)" class="menu">
+      <div
+        @click="handleLogin(menuModules[0].id)"
+        class="menu"
+        style="background: url('@/../../public/Image/menu4.png') no-repeat"
+      >
         <span>{{ menuModules[0]?.title }}</span>
       </div>
-      <div @click="handleLogin(menuModules[1].id)" class="menu">
+      <div
+        @click="handleLogin(menuModules[1].id)"
+        class="menu"
+        style="background: url('@/../../public/Image/menu2.png') no-repeat"
+      >
         <span>{{ menuModules[1]?.title }}</span>
       </div>
-      <div @click="handleLogin(menuModules[2].id)" class="menu">
+      <div
+        @click="handleLogin(menuModules[2].id)"
+        class="menu"
+        style="background: url('@/../../public/Image/menu3.png') no-repeat"
+      >
         <span>{{ menuModules[2]?.title }}</span>
       </div>
     </div>

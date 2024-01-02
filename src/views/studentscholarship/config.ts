@@ -4,6 +4,7 @@ import { getPageInfo as classesgetPageInfo } from '@/api/classes'; // 班级
 import { getPageInfo as stugetPageInfo } from '@/api/stuInfo'; // 学生
 import { getPageInfo as scholarshipgetPageInfo } from '@/api/scholarship'; // 奖学金
 import { useDictStore } from '@/store/modules/dict.js';
+import { searchParams, onSearch } from '@/utils/Search';
 
 const dictStore = useDictStore();
 
@@ -171,11 +172,15 @@ export const addFormSchema: FormSchema[] = [
     required: true,
     colProps: { span: 15 },
     componentProps: {
+      immediate: true,
       showSearch: true,
+      filterOption: false,
       api: stugetPageInfo,
       resultField: 'items',
+      params: searchParams,
+      onInput: onSearch,
       labelField: 'nameAndNumber',
-      valueField: 'nameAndNumber',
+      valueField: 'id',
     },
   },
   {
