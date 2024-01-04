@@ -12,22 +12,22 @@ export const columns: BasicColumn[] = [
   {
     title: '姓名',
     dataIndex: 'name',
-    width: 100,
+    width: 50,
   },
   {
     title: '性别',
     dataIndex: 'departmentName',
-    width: 80,
+    width: 50,
   },
   {
     title: '岗位任教类别',
     dataIndex: 'grade',
-    width: 80,
+    width: 100,
   },
   {
     title: '现任岗位等级',
     dataIndex: 'majorName',
-    width: 80,
+    width: 100,
   },
   {
     title: '聘用类型',

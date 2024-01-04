@@ -5,8 +5,11 @@
         <div class="wrap">
           <div class="wrap-box">
             <BasicUpload :maxSize="20" :maxNumber="10" @change="handleChange" :api="getInput" />
+            <!-- <a-upload>
+              <a-button @click="onChange">点击上传</a-button>
+            </a-upload> -->
             <a-button type="primary" class="export" @click="getExportData"> 导出 </a-button>
-            <a-button type="primary" class="download"> 模板下载 </a-button>
+            <a-button type="primary" class="download" @click="getDownload"> 模板下载 </a-button>
           </div>
         </div>
         <a-button type="primary" @click="handleCreate"> 新增教材信息 </a-button>
@@ -40,7 +43,7 @@
   import { BasicTable, useTable, TableAction } from '@/components/Table';
   import { BasicUpload } from '/@/components/Upload';
   import { downloadByData } from '/@/utils/file/download';
-  import { getPageInfo, deleteItem, getExport, getInput } from '@/api/teachingmaterial';
+  import { getPageInfo, deleteItem, getExport, getInput, getSysFile } from '@/api/teachingmaterial';
 
   import { useDrawer } from '@/components/Drawer';
   import DetailDrawer from './detailDrawer.vue';
@@ -50,6 +53,7 @@
   import dayjs from 'dayjs';
 
   const { notification } = useMessage();
+  let UploadIds = [];
 
   const [registerDrawer, { openDrawer }] = useDrawer();
   const [registerTable, { reload }] = useTable({
@@ -68,9 +72,16 @@
       autoSubmitOnEnter: true,
     },
     useSearchForm: true,
-    showTableSetting: true,
+    // showTableSetting: true,
     bordered: true,
     showIndexColumn: true,
+    rowSelection: {
+      onChange: (selectedRowKeys, selectedRows) => {
+        selectedRows.forEach((element) => {
+          UploadIds.push(element.id);
+        });
+      },
+    },
     actionColumn: {
       width: 80,
       title: '操作',
@@ -109,16 +120,28 @@
     reload();
   }
 
+  // 导出
   async function getExportData() {
-    const data = await getExport({});
+    const uniqueArray = [...new Set(UploadIds)];
+    const data = await getExport({ listId: uniqueArray });
     // data 为接口返回文件流数据，如果你的接口嵌套一层那就逐层去取
+    UploadIds = [];
     const currentTime = dayjs();
     const formattedTime = currentTime.format('YYYYMMDDHHmmss');
     downloadByData(data, `教材${formattedTime}.xlsx`);
   }
-  const handleChange = (list) => {
-    console.log(createMessage.info(`已上传文件${JSON.stringify(list)}`));
-    createMessage.info(`已上传文件${JSON.stringify(list)}`);
+
+  // 模板导出
+  const getDownload = async () => {
+    const data = await getSysFile({
+      Code: 'TemplateCode',
+    });
+    downloadByData(data, `教材模板.xlsx`);
+  };
+
+  // 导入
+  const onChange = () => {
+    console.log(11111);
   };
 </script>
 <style scoped lang="less">

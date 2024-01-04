@@ -47,6 +47,7 @@
   import { useMessage } from '@/hooks/web/useMessage';
 
   const { notification } = useMessage();
+  let UploadIds = [];
 
   const [registerDrawer, { openDrawer }] = useDrawer();
   const [registerTable, { reload }] = useTable({
@@ -65,6 +66,13 @@
     showTableSetting: true,
     bordered: true,
     showIndexColumn: true,
+    rowSelection: {
+      onChange: (selectedRowKeys, selectedRows) => {
+        selectedRows.forEach((element) => {
+          UploadIds.push(element.id);
+        });
+      },
+    },
     actionColumn: {
       width: 100,
       title: '操作',
@@ -101,6 +109,17 @@
       duration: 2,
     });
     reload();
+  }
+
+  // 导出
+  async function getExportData() {
+    const uniqueArray = [...new Set(UploadIds)];
+    const data = await getExport({ listId: uniqueArray });
+    // data 为接口返回文件流数据，如果你的接口嵌套一层那就逐层去取
+    UploadIds = [];
+    const currentTime = dayjs();
+    const formattedTime = currentTime.format('YYYYMMDDHHmmss');
+    downloadByData(data, `教材${formattedTime}.xlsx`);
   }
 </script>
 

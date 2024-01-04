@@ -172,15 +172,21 @@
       return warn('upload api must exist and be a function');
     }
     try {
+      debugger;
+      const fd = new FormData();
+      fd.append('file', item.file);
+      console.log(item);
+      console.log(fd.get('file'));
       item.status = UploadResultStatus.UPLOADING;
       const ret = await props.api?.(
         {
-          data: {
-            ...(props.uploadParams || {}),
-          },
-          file: item.file,
-          name: props.name,
-          filename: item.name,
+          // data: {
+          //   ...(props.uploadParams || {}),
+          // },
+          // file: item,
+          // name: props.name,
+          // filename: props.filename,
+          file: fd,
         },
         function onUploadProgress(progressEvent: ProgressEvent) {
           const complete = ((progressEvent.loaded / progressEvent.total) * 100) | 0;

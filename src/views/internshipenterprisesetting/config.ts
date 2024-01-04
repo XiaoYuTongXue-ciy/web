@@ -80,7 +80,8 @@ export const addFormSchema: FormSchema[] = [
     component: 'ApiCascader',
     label: '所属行业',
     componentProps: {
-      expandTrigger: 'hover',
+      dropdownMatchSelectWidth: true,
+      filterOption: true,
       api: dictStore.getDictValueToCode,
       apiParamKey: 'Code',
       labelField: 'value',
@@ -98,7 +99,7 @@ export const addFormSchema: FormSchema[] = [
     component: 'ApiCascader',
     label: '所属产业',
     componentProps: {
-      expandTrigger: 'hover',
+      dropdownMatchSelectWidth: true,
       api: dictStore.getDictValueToCode,
       apiParamKey: 'Code',
       labelField: 'value',
@@ -117,6 +118,8 @@ export const addFormSchema: FormSchema[] = [
     label: '对应专业',
     componentProps: {
       expandTrigger: 'hover',
+      dropdownMatchSelectWidth: true,
+      filterOptionL: true,
       api: dictStore.getDictValueToCode,
       apiParamKey: 'Code',
       labelField: 'value',
@@ -160,7 +163,7 @@ export const addFormSchema: FormSchema[] = [
     component: 'ApiCascader',
     label: '合作单位行政区域',
     componentProps: {
-      expandTrigger: 'hover',
+      dropdownMatchSelectWidth: true,
       api: dictStore.getDictValueToCode,
       apiParamKey: 'Code',
       labelField: 'value',
@@ -218,7 +221,7 @@ export const addFormSchema: FormSchema[] = [
     component: 'InputNumber',
   },
   {
-    field: 'cooperativeEnterpriseScaleId',
+    field: 'workforce',
     label: '职工人数',
     component: 'InputNumber',
   },
@@ -255,9 +258,16 @@ export const addFormSchema: FormSchema[] = [
   //     api: 'uploadApi',
   //   },
   // },
+
   {
-    field: 'remark',
-    label: '备注',
-    component: 'Input',
+    field: 'statusInfo',
+    label: '状态',
+    component: 'ApiSelect',
+    componentProps: {
+      api: dictStore.getDictValueToCode,
+      params: { Code: 'submit_status' },
+      labelField: 'value',
+      valueField: 'id',
+    },
   },
 ];

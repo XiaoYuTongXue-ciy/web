@@ -10,6 +10,7 @@ const Api = {
   delete: `${BASEURL}/delete`,
   export: `${BASEURL}/export`,
   uploadFile: `${BASEURL}/import`,
+  sysFile: '/sysFile/downloadFile',
 };
 
 // 列表页
@@ -70,10 +71,25 @@ export const getExport = (params) => {
   );
 };
 
+// 导入
 export const getInput = (params) => {
   return defHttp.post(
     {
       url: Api.uploadFile,
+      params,
+      headers: {
+        'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', // 设置请求头，指定为二进制流
+      },
+    },
+    { errorMessageMode: 'none', isTransformResponse: false },
+  );
+};
+
+// 模板
+export const getSysFile = (params) => {
+  return defHttp.post(
+    {
+      url: Api.sysFile,
       params,
       responseType: 'blob',
     },
