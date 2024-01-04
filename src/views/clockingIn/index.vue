@@ -1,35 +1,31 @@
 <template>
   <div>
     <BasicTable @register="registerTable">
-      <!-- <template #expandedRowRender="{ record }">
-        <span>No: {{ record }} </span>
-      </template> -->
-      <template #bodyCell="{ column, record }">
-        <template v-if="column.key === 'action'">
-          <TableAction
-            :actions="[
-              {
-                icon: 'ant-design:info-circle-outlined',
-                onClick: handleInfo.bind(null, record),
-              },
-              {
-                icon: 'clarity:note-edit-line',
-                onClick: handleEdit.bind(null, record),
-              },
-              {
-                icon: 'ant-design:delete-outlined',
-                color: 'error',
-                popConfirm: {
-                  title: '是否确认删除',
-                  placement: 'left',
-                  confirm: handleDelete.bind(null, record),
-                },
-              },
-            ]"
-          />
-        </template>
-        <!-- <template v-if="column.key === 'signInRate'"> {{ `${record.signInRate}%` }} </template> -->
+      <template #expandedRowRender="{ record }">
+        <BasicTable
+          style="margin-inline: 0 -6px"
+          :maxHeight="280"
+          :columns="detailInfoColumns"
+          :dataSource="record?.clockingInClass"
+          :pagination="{ pageSize: 10 }"
+          :canResize="true"
+          :actionColumn="childActionColumn"
+        >
+          <template #bodyCell="{ column, record }">
+            <template v-if="column.key === 'action'">
+              <TableAction
+                :actions="[
+                  {
+                    icon: 'ant-design:info-circle-outlined',
+                    onClick: handleInfo.bind(null, record),
+                  },
+                ]"
+              />
+            </template>
+          </template>
+        </BasicTable>
       </template>
+
       <template #form-localSearch="{ model, field }">
         <ApiSelect
           :api="getUserList"
@@ -61,11 +57,11 @@
   import { MessageEnum } from '@/enums/MessageEnum.ts';
   import { useMessage } from '@/hooks/web/useMessage';
 
-  import { columns, searchFormSchema } from './config';
+  import { detailInfoColumns, columns, searchFormSchema } from './config';
 
   const { notification } = useMessage();
 
-  const [registerDrawer, { openDrawer }] = useDrawer();
+  const [registerDrawer] = useDrawer();
   const [registerModal, { openModal }] = useModal({});
   const [registerTable, { reload }] = useTable({
     title: '',
@@ -86,25 +82,14 @@
     showIndexColumn: true,
     expandRowByClick: true,
     isTreeTable: true,
-
-    actionColumn: {
-      width: 120,
-      title: '操作',
-      dataIndex: 'action',
-      fixed: 'right',
-    },
   });
 
-  function handleEdit(record) {
-    openDrawer(true, {
-      record,
-      isUpdate: true,
-    });
-  }
-
-  function handleDelete(record) {
-    console.log(record);
-  }
+  const childActionColumn = {
+    width: 120,
+    title: '操作',
+    dataIndex: 'action',
+    fixed: 'right',
+  };
 
   function handleSuccess() {
     notification.success({
@@ -123,9 +108,9 @@
   }
 
   function handleInfo(record) {
-    console.log('rec', record);
     openModal(true, {
       id: record.id,
+      clockingInId: record.clockingInId,
     });
   }
 </script>

@@ -1,10 +1,4 @@
 import { BasicColumn, FormSchema } from '/@/components/Table';
-// import { getPageInfo as getUserList } from '@/api/sysUser/index.js';
-
-// import { useDictStore } from '@/store/modules/dict.js';
-// import { getListInfo } from '@/api/major/index.js';
-
-// const dictStore = useDictStore();
 
 export const columns: BasicColumn[] = [
   // 序号、开始时间、结束时间、发起人、综合签到率

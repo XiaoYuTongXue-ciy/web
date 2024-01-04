@@ -17,8 +17,8 @@ export default defineApplicationConfig({
     server: {
       proxy: {
         '/basic-api': {
-          target: 'http://8.130.134.59:5001/', // 服务器
-          // target: 'http://192.168.31.130:5001/', //本地
+          // target: 'http://8.130.134.59:5001/', // 服务器
+          target: 'http://101.43.171.222:9106/', //本地
           changeOrigin: true,
           ws: true,
           rewrite: (path) => path.replace(new RegExp(`^/basic-api`), '/api'),

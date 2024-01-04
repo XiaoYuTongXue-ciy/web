@@ -10,23 +10,12 @@
     @ok="closeModal"
   >
     <BasicTable @register="registerTable">
-      <template #expandedRowRender="{ record }">
-        <BasicTable
-          style="margin-inline: 0 -6px"
-          :maxHeight="280"
-          :columns="detailInfoChildColumns"
-          :dataSource="record?.signInStatuses"
-          :pagination="{ pageSize: 10 }"
-          :canResize="true"
-          :actionColumn="childActionColumn"
-        >
-          <template #bodyCell="{ column, record }">
-            <template v-if="column.key === 'action'">
-              <TableAction :actions="createActions(record)" />
-            </template>
-          </template>
-        </BasicTable> </template
-    ></BasicTable>
+      <template #bodyCell="{ column, record }">
+        <template v-if="column.key === 'action'">
+          <TableAction :actions="createActions(record)" />
+        </template>
+      </template>
+    </BasicTable>
   </BasicModal>
 </template>
 <script setup>
@@ -36,15 +25,16 @@
   import { getDetailInfo } from '@/api/clockingIn';
   import { cloneDeep } from 'lodash-es';
   import { useMessage } from '@/hooks/web/useMessage';
-  import { detailInfoColumns, detailInfoChildColumns } from '../config';
-  import { add } from '@/api/signIn';
+  import { detailInfoChildColumns } from '../config';
+  import { add, deleteItem } from '@/api/signIn';
 
   const currentId = ref();
+  const clockingInId = ref();
   const currentEditKeyRef = ref('');
   const { createMessage: msg } = useMessage();
   const [registerModal, { closeModal }] = useModalInner(async (data) => {
-    console.log('useModalInner', data?.id);
     currentId.value = data.id || '';
+    clockingInId.value = data.clockingInId || '';
     reload();
   });
 
@@ -53,25 +43,26 @@
     api: getDetailInfo,
     beforeFetch: (value) => ({
       ...value,
-      id: currentId.value,
+      id: clockingInId.value,
+      ClassId: currentId.value,
     }),
     isTreeTable: true,
     maxHeight: 450,
     fetchSetting: {
-      listField: 'clockingInClass',
+      listField: 'signInStatus',
     },
     canResize: true,
-    columns: detailInfoColumns,
+    columns: detailInfoChildColumns,
     bordered: false,
     showIndexColumn: true,
+    actionColumn: {
+      width: 120,
+      title: '操作',
+      dataIndex: 'action',
+      fixed: 'right',
+    },
   });
 
-  const childActionColumn = {
-    width: 120,
-    title: '操作',
-    dataIndex: 'action',
-    fixed: 'right',
-  };
   function createActions(record) {
     if (!record.editable) {
       return [
@@ -115,13 +106,18 @@
     if (valid) {
       try {
         const data = cloneDeep(record.editValueRefs);
-        console.log(data);
+
         //TODO 此处将数据提交给服务器保存
-        await add({
-          clockingInId: currentId.value,
-          studentId: record?.id,
-          checkInStatus: data.status,
-        });
+        data.status
+          ? await add({
+              clockingInId: clockingInId.value,
+              studentId: record?.id,
+              checkInStatus: data.status,
+            })
+          : await deleteItem({
+              clockingInId: clockingInId.value,
+              studentId: record?.id,
+            });
         // 保存之后提交编辑状态
         const pass = await record.onEdit?.(false, true);
         if (pass) {
