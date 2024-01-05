@@ -25,9 +25,9 @@
       :fileListOpenDrag="fileListOpenDrag"
       :fileListDragOptions="fileListDragOptions"
       @register="registerUploadModal"
+      @change="handleChange"
       @delete="handleDelete"
     />
-
     <!-- <UploadPreviewModal
       :value="fileList"
       @register="registerPreviewModal"
@@ -37,7 +37,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-  import { ref, watch, computed, useAttrs } from 'vue';
+  import { ref, watch, computed, unref, useAttrs } from 'vue';
   import { Recordable } from '@vben/types';
   // import Icon from '@/components/Icon/Icon.vue';
   import { Space } from 'ant-design-vue'; // Tooltip
@@ -85,11 +85,12 @@
   );
 
   // 上传modal保存操作
-  // function handleChange(urls: string[]) {
-  //   fileList.value = [...unref(fileList), ...(urls || [])];
-  //   emit('update:value', fileList.value);
-  //   emit('change', fileList.value);
-  // }
+  function handleChange(urls: string[]) {
+    fileList.value = [...unref(fileList), ...(urls || [])];
+    emit('update:value', fileList.value);
+    emit('change', fileList.value);
+    console.log('fileList', fileList.value);
+  }
 
   // 预览modal保存操作
   // function handlePreviewChange(urls: string[]) {

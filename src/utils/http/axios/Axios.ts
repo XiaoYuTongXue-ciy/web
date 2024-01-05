@@ -152,6 +152,7 @@ export class VAxios {
 
     return this.axiosInstance.request<T>({
       ...config,
+      baseURL: '/basic-api',
       method: 'POST',
       data: formData,
       headers: {

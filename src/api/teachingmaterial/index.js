@@ -71,17 +71,13 @@ export const getExport = (params) => {
   );
 };
 
-// 导入
-export const getInput = (params) => {
-  return defHttp.post(
+export const uploadApi = (params, onUploadProgress) => {
+  return defHttp.uploadFile(
     {
-      url: Api.uploadFile,
-      params,
-      headers: {
-        'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', // 设置请求头，指定为二进制流
-      },
+      url: `${BASEURL}/import`,
+      onUploadProgress,
     },
-    { errorMessageMode: 'none', isTransformResponse: false },
+    params,
   );
 };
 
