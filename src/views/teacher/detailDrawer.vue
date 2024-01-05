@@ -15,7 +15,7 @@
   import { BasicForm, useForm } from '@/components/Form/index';
   import { addFormSchema } from './config';
   import { BasicDrawer, useDrawerInner } from '@/components/Drawer';
-  import { add, update } from '@/api/teachingmaterial';
+  import { add, update } from '@/api/teacher';
 
   const emit = defineEmits(['success', 'register']);
   const isUpdate = ref(true);
@@ -44,7 +44,7 @@
     }
   });
 
-  const getTitle = computed(() => (!unref(isUpdate) ? '新增教材信息' : '编辑教材信息'));
+  const getTitle = computed(() => (!unref(isUpdate) ? '新增老师信息' : '编辑老师信息'));
 
   async function handleSubmit() {
     try {

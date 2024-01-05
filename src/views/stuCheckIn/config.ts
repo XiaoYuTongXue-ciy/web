@@ -134,6 +134,7 @@ export const addFormSchema: FormSchema[] = [
   {
     field: 'id',
     show: false,
+    slot: '',
   },
   {
     field: 'classnumber',

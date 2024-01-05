@@ -1,32 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { BasicColumn, FormSchema } from '@/components/Table';
 import { useDictStore } from '@/store/modules/dict.js';
 
 const dictStore = useDictStore();
-
-// 数据联动
-
-const DataCascader = async () => {
-  await dictStore
-    .getDictValueToCode({ Code: 'owning_sector' })
-    .then((res) => {
-      console.log(res);
-      Data(res);
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-};
-
-const Data = (arr, children = []) => {
-  arr.forEach((items) => {
-    if (items.children) {
-      children.push({ value: items.value, id: items.id, children: Data(items.children) });
-    }
-  });
-  console.log(children);
-  return children;
-};
-console.log(DataCascader());
 
 export const columns: BasicColumn[] = [
   {
@@ -56,20 +32,22 @@ export const columns: BasicColumn[] = [
   },
   {
     title: '企业性质',
-    dataIndex: '',
+    dataIndex: 'cooperativeUnitNature ',
+    customRender: ({ text, record }) => {
+      const cities = record?.cooperativeUnitNature || [];
+      return cities.join(',');
+    },
     width: 120,
   },
   {
     title: '所在省市',
     dataIndex: 'unitArea',
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     customRender: ({ text, record }) => {
       const cities = record?.unitArea || [];
       return cities.join(',');
     },
     width: 150,
   },
-
   {
     title: '备注',
     dataIndex: 'remark',
@@ -98,41 +76,64 @@ export const addFormSchema: FormSchema[] = [
     component: 'Input',
   },
   {
-    field: 'owning_sector',
+    field: 'owningSectorId',
+    component: 'ApiCascader',
     label: '所属行业',
-    component: 'Select',
     componentProps: {
+      dropdownMatchSelectWidth: true,
+      filterOption: true,
       api: dictStore.getDictValueToCode,
-      params: { Code: 'owning_sector' },
+      apiParamKey: 'Code',
       labelField: 'value',
       valueField: 'id',
+      initFetchParams: {
+        Code: 'owning_sector',
+      },
+      isLeaf: (record) => {
+        return !(record.levelType < 3);
+      },
     },
   },
   {
     field: 'owningIndustryId',
+    component: 'ApiCascader',
     label: '所属产业',
-    component: 'Select',
     componentProps: {
+      dropdownMatchSelectWidth: true,
       api: dictStore.getDictValueToCode,
-      params: { Code: 'professional_category' },
+      apiParamKey: 'Code',
       labelField: 'value',
       valueField: 'id',
+      initFetchParams: {
+        Code: 'owning_industry',
+      },
+      isLeaf: (record) => {
+        return !(record.levelType < 3);
+      },
     },
   },
   {
     field: 'professionalCategoryId',
+    component: 'ApiCascader',
     label: '对应专业',
-    component: 'ApiSelect',
-    // required: true,
     componentProps: {
+      expandTrigger: 'hover',
+      dropdownMatchSelectWidth: true,
+      filterOptionL: true,
       api: dictStore.getDictValueToCode,
-      params: { Code: 'professional_category' },
+      apiParamKey: 'Code',
       labelField: 'value',
       valueField: 'id',
+      initFetchParams: {
+        Code: 'professional_category',
+      },
+      isLeaf: (record) => {
+        return !(record.levelType < 3);
+      },
     },
   },
   {
-    field: 'companysize',
+    field: 'cooperativeEnterpriseScaleId',
     label: '公司规模',
     component: 'ApiSelect',
     componentProps: {
@@ -143,7 +144,7 @@ export const addFormSchema: FormSchema[] = [
     },
   },
   {
-    field: 'contactperson',
+    field: 'enterpriseCreditCode',
     label: '企业信用代码',
     component: 'Input',
   },
@@ -159,13 +160,20 @@ export const addFormSchema: FormSchema[] = [
   },
   {
     field: 'unitAreaId',
+    component: 'ApiCascader',
     label: '合作单位行政区域',
-    component: 'ApiSelect',
     componentProps: {
+      dropdownMatchSelectWidth: true,
       api: dictStore.getDictValueToCode,
-      params: { Code: 'unit_area' },
+      apiParamKey: 'Code',
       labelField: 'value',
       valueField: 'id',
+      initFetchParams: {
+        Code: 'unit_area',
+      },
+      isLeaf: (record) => {
+        return !(record.levelType < 3);
+      },
     },
   },
   {
@@ -185,11 +193,24 @@ export const addFormSchema: FormSchema[] = [
   },
   {
     field: 'cooperativeUnitAttributeIds',
+    label: '合作单位属性',
+    component: 'ApiSelect',
+    componentProps: {
+      mode: 'multiple',
+      api: dictStore.getDictValueToCode,
+      params: { Code: 'cooperative_unit_attribute' },
+      labelField: 'value',
+      valueField: 'id',
+    },
+  },
+  {
+    field: 'cooperativeUnitNatureId',
     label: '合作单位性质',
     component: 'ApiSelect',
     componentProps: {
+      mode: 'multiple',
       api: dictStore.getDictValueToCode,
-      params: { Code: 'cooperative_unit_attribute' },
+      params: { Code: 'cooperative_unit_nature' },
       labelField: 'value',
       valueField: 'id',
     },
@@ -200,7 +221,7 @@ export const addFormSchema: FormSchema[] = [
     component: 'InputNumber',
   },
   {
-    field: 'cooperativeEnterpriseScaleId',
+    field: 'workforce',
     label: '职工人数',
     component: 'InputNumber',
   },
@@ -225,21 +246,28 @@ export const addFormSchema: FormSchema[] = [
     label: '校企合作协议',
     component: 'Input',
   },
+  // {
+  //   field: 'writtenReport',
+  //   component: 'Upload',
+  //   label: '学校考察报告',
+  //   colProps: {
+  //     span: 8,
+  //   },
+  //   rules: [{ required: true, message: '请选择上传文件' }],
+  //   componentProps: {
+  //     api: 'uploadApi',
+  //   },
+  // },
+
   {
-    field: 'writtenReport',
-    component: 'Upload',
-    label: '学校考察报告',
-    colProps: {
-      span: 8,
-    },
-    rules: [{ required: true, message: '请选择上传文件' }],
+    field: 'statusInfo',
+    label: '状态',
+    component: 'ApiSelect',
     componentProps: {
-      api: 'uploadApi',
+      api: dictStore.getDictValueToCode,
+      params: { Code: 'submit_status' },
+      labelField: 'value',
+      valueField: 'id',
     },
-  },
-  {
-    field: 'remark',
-    label: '备注',
-    component: 'Input',
   },
 ];

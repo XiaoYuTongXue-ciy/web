@@ -9,7 +9,7 @@
             <a-button type="primary" class="download"> 模板下载 </a-button>
           </div>
         </div>
-        <a-button type="primary" @click="handleCreate"> 新增学生行规范 </a-button>
+        <a-button type="primary" @click="handleCreate"> 新增老师信息 </a-button>
       </template>
       <template #bodyCell="{ column, record }">
         <template v-if="column.key === 'action'">
@@ -38,16 +38,15 @@
 </template>
 <script setup>
   import { BasicTable, useTable, TableAction } from '@/components/Table';
-  import { getPageInfo, deleteItem } from '@/api/studentcodecfconduct';
   import { BasicUpload } from '/@/components/Upload';
   import { downloadByData } from '/@/utils/file/download';
+  import { getPageInfo, deleteItem } from '@/api/teacher';
 
   import { useDrawer } from '@/components/Drawer';
   import DetailDrawer from './detailDrawer.vue';
 
   import { columns, searchFormSchema } from './config';
   import { useMessage } from '@/hooks/web/useMessage';
-  import dayjs from 'dayjs';
 
   const { notification } = useMessage();
   let UploadIds = [];
@@ -58,12 +57,15 @@
     api: getPageInfo,
     columns,
     formConfig: {
+      autoSetPlaceHolder: true,
       labelWidth: 120,
       schemas: searchFormSchema,
       showAdvancedButton: true,
-    },
-    actionColOptions: {
-      span: 4,
+      autoAdvancedLine: 1,
+      actionColOptions: {
+        span: 24,
+      },
+      autoSubmitOnEnter: true,
     },
     useSearchForm: true,
     showTableSetting: true,
@@ -124,11 +126,7 @@
     const formattedTime = currentTime.format('YYYYMMDDHHmmss');
     downloadByData(data, `教材${formattedTime}.xlsx`);
   }
-  const handleChange = (list) => {
-    createMessage.info(`已上传文件${JSON.stringify(list)}`);
-  };
 </script>
-
 <style scoped lang="less">
   .wrap {
     display: flex;
