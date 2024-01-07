@@ -4,9 +4,9 @@
       <template #toolbar
         ><div class="wrap">
           <div class="wrap-box">
-            <BasicUpload :maxSize="20" :maxNumber="10" @change="handleChange" :api="uploadFile" />
+            <BasicUpload :maxSize="20" :maxNumber="10" @change="handleChange" :api="getInput" />
             <a-button type="primary" class="export" @click="getExportData"> 导出 </a-button>
-            <a-button type="primary" class="download"> 模板下载 </a-button>
+            <a-button type="primary" class="download" @clic="getDownload"> 模板下载 </a-button>
           </div>
         </div>
         <a-button type="primary" @click="handleCreate"> 新增学生奖学金 </a-button>
@@ -38,7 +38,13 @@
 </template>
 <script setup>
   import { BasicTable, useTable, TableAction } from '@/components/Table';
-  import { getPageInfo, deleteItem } from '@/api/studentscholarship';
+  import {
+    getPageInfo,
+    deleteItem,
+    getExport,
+    getInput,
+    getSysFile,
+  } from '@/api/studentscholarship';
 
   import { useDrawer } from '@/components/Drawer';
   import DetailDrawer from './detailDrawer.vue';
@@ -121,6 +127,13 @@
     const formattedTime = currentTime.format('YYYYMMDDHHmmss');
     downloadByData(data, `教材${formattedTime}.xlsx`);
   }
+  // 模板导出
+  const getDownload = async () => {
+    const data = await getSysFile({
+      Code: 'TemplateCode',
+    });
+    downloadByData(data, `教材模板.xlsx`);
+  };
 </script>
 
 <style scoped lang="less">

@@ -2,13 +2,6 @@
   <div>
     <BasicTable @register="registerTable">
       <template #toolbar>
-        <div class="wrap">
-          <div class="wrap-box">
-            <BasicUpload :maxSize="20" :maxNumber="10" @change="handleChange" :api="uploadFile" />
-            <a-button type="primary" class="export" @click="getExportData"> 导出 </a-button>
-            <a-button type="primary" class="download"> 模板下载 </a-button>
-          </div>
-        </div>
         <a-button type="primary" @click="handleCreate"> 新增查寝记录 </a-button>
       </template>
       <template #bodyCell="{ column, record }">
@@ -39,8 +32,6 @@
 <script setup>
   import { BasicTable, useTable, TableAction } from '@/components/Table';
   import { getDormitoryInspection } from '@/api/studentcheckin';
-  import { BasicUpload } from '/@/components/Upload';
-  import { downloadByData } from '/@/utils/file/download';
 
   import { useDrawer } from '@/components/Drawer';
   import DetailDrawer from './detailDrawer.vue';
@@ -104,15 +95,6 @@
     });
     reload();
   }
-  async function getExportData() {
-    const data = await getExport({});
-    // data 为接口返回文件流数据，如果你的接口嵌套一层那就逐层去取
-    downloadByData(data, '教材.xlsx');
-  }
-
-  const handleChange = (list) => {
-    createMessage.info(`已上传文件${JSON.stringify(list)}`);
-  };
 </script>
 
 <style scoped lang="less">

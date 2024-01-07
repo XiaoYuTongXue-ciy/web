@@ -9,6 +9,9 @@ const Api = {
   add: `${BASEURL}/add`,
   update: `${BASEURL}/update`,
   delete: `${BASEURL}/delete`,
+  export: `${BASEURL}/export`,
+  uploadFile: `${BASEURL}/import`,
+  sysFile: '/sysFile/downloadFile',
 };
 
 // 列表页
@@ -55,4 +58,36 @@ export const deleteItem = (params) => {
     url: Api.delete,
     params,
   });
+};
+
+// 导出
+export const getExport = (params) => {
+  return defHttp.post(
+    {
+      url: Api.export,
+      params,
+      responseType: 'blob',
+    },
+    { errorMessageMode: 'none', isTransformResponse: false },
+  );
+};
+
+// 导入
+export const getInput = (params) => {
+  return defHttp.post({
+    url: Api.uploadFile,
+    params,
+  });
+};
+
+// 模板
+export const getSysFile = (params) => {
+  return defHttp.post(
+    {
+      url: Api.sysFile,
+      params,
+      responseType: 'blob',
+    },
+    { errorMessageMode: 'none', isTransformResponse: false },
+  );
 };

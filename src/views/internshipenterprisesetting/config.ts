@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { BasicColumn, FormSchema } from '@/components/Table';
 import { useDictStore } from '@/store/modules/dict.js';
+import { getUpload } from '@/api/internshipenterprisesetting';
 
 const dictStore = useDictStore();
 
@@ -57,10 +58,40 @@ export const columns: BasicColumn[] = [
 
 export const searchFormSchema: FormSchema[] = [
   {
-    field: 'companyName',
-    label: '输入企业名称',
+    field: 'unitName',
+    label: '企业名称',
     component: 'Input',
     colProps: { span: 7 },
+  },
+  {
+    field: 'contactName',
+    label: '企业联系人',
+    component: 'Input',
+    colProps: { span: 7 },
+  },
+  {
+    field: 'contactPhone',
+    label: '联系人电话',
+    component: 'Input',
+    colProps: { span: 7 },
+  },
+  {
+    field: 'unitArea',
+    label: '所在省市',
+    component: 'Input',
+    colProps: { span: 7 },
+  },
+];
+
+// 是否上市
+const IsOrNo: LabelValueOptions = [
+  {
+    label: '是',
+    value: true,
+  },
+  {
+    label: '否',
+    value: false,
   },
 ];
 
@@ -69,6 +100,11 @@ export const addFormSchema: FormSchema[] = [
     field: 'id',
     show: false,
     slot: '',
+  },
+  {
+    field: 'recordYear',
+    label: '备案日期',
+    component: 'DatePicker',
   },
   {
     field: 'companyName',
@@ -187,6 +223,11 @@ export const addFormSchema: FormSchema[] = [
     component: 'Input',
   },
   {
+    field: 'contactPosition',
+    label: '联系人职务',
+    component: 'Input',
+  },
+  {
     field: 'contactPhone',
     label: '联系人电话',
     component: 'InputNumber',
@@ -218,12 +259,36 @@ export const addFormSchema: FormSchema[] = [
   {
     field: 'cooperativeEnterpriseScaleId',
     label: '企业规模',
-    component: 'InputNumber',
+    component: 'Input',
   },
   {
     field: 'workforce',
     label: '职工人数',
     component: 'InputNumber',
+  },
+  {
+    field: 'isBelisted',
+    label: '是否上市',
+    component: 'Select',
+    componentProps: {
+      options: IsOrNo,
+    },
+  },
+  {
+    field: 'isNationalTop500',
+    label: '是否全国500强',
+    component: 'Select',
+    componentProps: {
+      options: IsOrNo,
+    },
+  },
+  {
+    field: 'registeredCapital',
+    label: '注册资本',
+    component: 'Select',
+    componentProps: {
+      options: IsOrNo,
+    },
   },
   {
     field: 'cooperationNatureId',
@@ -246,6 +311,25 @@ export const addFormSchema: FormSchema[] = [
     label: '校企合作协议',
     component: 'Input',
   },
+  {
+    field: 'writtenReport',
+    label: '学校考察报告',
+    component: 'Input',
+  },
+  // {
+  //   field: 'schoolEnterpriseAgreement',
+  //   component: 'Upload',
+  //   label: '校企合作协议',
+  //   colProps: {
+  //     span: 8,
+  //   },
+  //   rules: [{ required: true, message: '请选择上传文件' }],
+  //   componentProps: {
+  //     api: () => {
+  //       getUpload({ uploadtype: 'schoolEnterpriseAgreement' });
+  //     },
+  //   },
+  // },
   // {
   //   field: 'writtenReport',
   //   component: 'Upload',
@@ -255,19 +339,9 @@ export const addFormSchema: FormSchema[] = [
   //   },
   //   rules: [{ required: true, message: '请选择上传文件' }],
   //   componentProps: {
-  //     api: 'uploadApi',
+  //     api: () => {
+  //       getUpload({ uploadtype: 'writtenReport' });
+  //     },
   //   },
   // },
-
-  {
-    field: 'statusInfo',
-    label: '状态',
-    component: 'ApiSelect',
-    componentProps: {
-      api: dictStore.getDictValueToCode,
-      params: { Code: 'submit_status' },
-      labelField: 'value',
-      valueField: 'id',
-    },
-  },
 ];

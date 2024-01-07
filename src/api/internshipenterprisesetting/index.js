@@ -9,6 +9,7 @@ const Api = {
   add: `${BASEURL}/add`,
   update: `${BASEURL}/update`,
   delete: `${BASEURL}/delete`,
+  upload: `${BASEURL}/upload`,
 };
 
 // 列表页
@@ -53,6 +54,14 @@ export const update = (params) => {
 export const deleteItem = (params) => {
   return defHttp.post({
     url: Api.delete,
+    params,
+  });
+};
+
+// 上传文件
+export const getUpload = (params) => {
+  return defHttp.post({
+    url: Api.upload,
     params,
   });
 };
