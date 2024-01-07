@@ -71,7 +71,6 @@ export const getExport = (params) => {
   );
 };
 
-<<<<<<< Updated upstream
 export const uploadApi = (params, onUploadProgress) => {
   return defHttp.uploadFile(
     {
@@ -80,14 +79,6 @@ export const uploadApi = (params, onUploadProgress) => {
     },
     params,
   );
-=======
-// 导入
-export const getInput = (params) => {
-  return defHttp.post({
-    url: Api.uploadFile,
-    params,
-  });
->>>>>>> Stashed changes
 };
 
 // 模板
