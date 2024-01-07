@@ -3,11 +3,11 @@
     <BasicTable @register="registerTable">
       <template #toolbar>
         <div class="wrap">
-          <div class="wrap-box">
+          <!-- <div class="wrap-box">
             <BasicUpload :maxSize="20" :maxNumber="10" @change="handleChange" :api="uploadFile" />
             <a-button type="primary" class="export" @click="getExportData"> 导出 </a-button>
             <a-button type="primary" class="download"> 模板下载 </a-button>
-          </div>
+          </div> -->
         </div>
         <a-button type="primary" @click="handleCreate"> 新增老师信息 </a-button>
       </template>
@@ -38,9 +38,9 @@
 </template>
 <script setup>
   import { BasicTable, useTable, TableAction } from '@/components/Table';
-  import { BasicUpload } from '/@/components/Upload';
-  import { downloadByData } from '/@/utils/file/download';
-  import { getPageInfo, deleteItem } from '@/api/teacher';
+  // import { BasicUpload } from '/@/components/Upload';
+  // import { downloadByData } from '/@/utils/file/download';
+  import { getPageInfo, deleteItem } from './api';
 
   import { useDrawer } from '@/components/Drawer';
   import DetailDrawer from './detailDrawer.vue';
@@ -63,7 +63,7 @@
       showAdvancedButton: true,
       autoAdvancedLine: 1,
       actionColOptions: {
-        span: 24,
+        span: 12,
       },
       autoSubmitOnEnter: true,
     },
@@ -117,15 +117,15 @@
   }
 
   // 导出
-  async function getExportData() {
-    const uniqueArray = [...new Set(UploadIds)];
-    const data = await getExport({ listId: uniqueArray });
-    // data 为接口返回文件流数据，如果你的接口嵌套一层那就逐层去取
-    UploadIds = [];
-    const currentTime = dayjs();
-    const formattedTime = currentTime.format('YYYYMMDDHHmmss');
-    downloadByData(data, `教材${formattedTime}.xlsx`);
-  }
+  // async function getExportData() {
+  //   const uniqueArray = [...new Set(UploadIds)];
+  //   const data = await getExport({ listId: uniqueArray });
+  //   // data 为接口返回文件流数据，如果你的接口嵌套一层那就逐层去取
+  //   UploadIds = [];
+  //   const currentTime = dayjs();
+  //   const formattedTime = currentTime.format('YYYYMMDDHHmmss');
+  //   downloadByData(data, `教材${formattedTime}.xlsx`);
+  // }
 </script>
 <style scoped lang="less">
   .wrap {

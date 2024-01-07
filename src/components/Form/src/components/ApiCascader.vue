@@ -2,10 +2,11 @@
   <Cascader
     v-model:value="state"
     :options="options"
-    :load-data="loadData"
     change-on-select
+    :load-data="loadData"
     @change="handleChange"
     :displayRender="handleRenderDisplay"
+    :expand-trigger="expandTrigger"
   >
     <template #suffixIcon v-if="loading">
       <LoadingOutlined spin />
@@ -48,6 +49,8 @@
       type: Function as PropType<(arg?: Recordable<any>) => Promise<Option[]>>,
       default: null,
     },
+    expandTrigger: propTypes.any,
+    dynamicFetch: propTypes.bool, // 是否动态加载
     numberToString: propTypes.bool,
     resultField: propTypes.string.def(''),
     labelField: propTypes.string.def('label'),
@@ -71,7 +74,7 @@
   });
 
   const emit = defineEmits(['change', 'defaultChange']);
-
+  // const expandTrigger = ref<'hover' | 'click'>(props.expandTrigger);
   const apiData = ref<any[]>([]);
   const options = ref<Option[]>([]);
   const loading = ref<boolean>(false);
@@ -137,7 +140,7 @@
     targetOption.loading = true;
 
     const api = props.api;
-    if (!api || !isFunction(api)) return;
+    if (!api || !isFunction(api) || !props.dynamicFetch) return;
     try {
       const res = await api({
         [props.apiParamKey]: Reflect.get(targetOption, 'value'),

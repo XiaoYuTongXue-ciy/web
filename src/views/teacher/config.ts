@@ -1,12 +1,17 @@
 import { BasicColumn, FormSchema } from '@/components/Table';
 import { useDictStore } from '@/store/modules/dict.js';
+import { genderOptions, genderMap } from './utils';
 
 const dictStore = useDictStore();
 
 export const columns: BasicColumn[] = [
   {
+    dataIndex: 'id',
+    ifShow: false,
+  },
+  {
     title: '工号',
-    dataIndex: 'jobNumber ',
+    dataIndex: 'jobNumber',
     width: 50,
   },
   {
@@ -16,22 +21,25 @@ export const columns: BasicColumn[] = [
   },
   {
     title: '性别',
-    dataIndex: 'departmentName',
+    dataIndex: 'gender',
     width: 50,
+    customRender: ({ record }) => {
+      return record?.gender ? genderMap[record?.gender] : '';
+    },
   },
   {
-    title: '岗位任教类别',
-    dataIndex: 'grade',
+    title: '现任岗位类别',
+    dataIndex: 'currentJobCategory',
     width: 100,
   },
   {
     title: '现任岗位等级',
-    dataIndex: 'majorName',
+    dataIndex: 'currentJoblevel',
     width: 100,
   },
   {
     title: '聘用类型',
-    dataIndex: 'className',
+    dataIndex: 'employmentCategory',
     width: 80,
   },
   {
@@ -40,18 +48,8 @@ export const columns: BasicColumn[] = [
     width: 100,
   },
   {
-    title: '出生日期',
-    dataIndex: 'studentNumber',
-    width: 100,
-  },
-  {
     title: '移动电话',
     dataIndex: 'mobileTelephone',
-    width: 100,
-  },
-  {
-    title: '备注',
-    dataIndex: 'remark',
     width: 100,
   },
 ];
@@ -68,26 +66,6 @@ export const searchFormSchema: FormSchema[] = [
     label: '工号',
     colProps: { span: 6 },
     component: 'Input',
-  },
-];
-
-// 性别
-const gender: LabelValueOptions = [
-  {
-    label: '未说明性别',
-    value: '0',
-  },
-  {
-    label: '男',
-    value: '1',
-  },
-  {
-    label: '女',
-    value: '2',
-  },
-  {
-    label: '其他',
-    value: '3',
   },
 ];
 
@@ -117,8 +95,9 @@ export const addFormSchema: FormSchema[] = [
     required: true,
     colProps: { span: 15 },
     component: 'Select',
+
     componentProps: {
-      options: gender,
+      options: genderOptions,
     },
   },
   {
@@ -145,13 +124,11 @@ export const addFormSchema: FormSchema[] = [
       valueField: 'id',
     },
   },
-
   {
     field: 'certificateNumber',
     label: '身份证号',
     component: 'InputNumber',
   },
-
   {
     field: 'highestDegreelevelId',
     label: '最高学位层次',
@@ -186,7 +163,7 @@ export const addFormSchema: FormSchema[] = [
     },
   },
   {
-    field: 'currentJoblevelId',
+    field: 'currentJobCategoryId',
     label: '现任岗位类别',
     component: 'ApiSelect',
     componentProps: {
@@ -197,7 +174,7 @@ export const addFormSchema: FormSchema[] = [
     },
   },
   {
-    field: 'semesterId',
+    field: 'currentJoblevelId',
     label: '岗位等级',
     component: 'ApiSelect',
     componentProps: {
@@ -208,7 +185,29 @@ export const addFormSchema: FormSchema[] = [
     },
   },
   {
-    field: 'semesterId',
+    field: 'jobCategoryId',
+    label: '兼任岗位类别',
+    component: 'ApiSelect',
+    componentProps: {
+      api: dictStore.getDictValueToCode,
+      params: { Code: 'part_time_job_category' },
+      labelField: 'value',
+      valueField: 'id',
+    },
+  },
+  {
+    field: 'legalRepresentativeNameId',
+    label: '兼任岗位等级',
+    component: 'ApiSelect',
+    componentProps: {
+      api: dictStore.getDictValueToCode,
+      params: { Code: 'current_post_level' },
+      labelField: 'value',
+      valueField: 'id',
+    },
+  },
+  {
+    field: 'currentStateId',
     label: '当前状态',
     component: 'ApiSelect',
     componentProps: {
@@ -229,17 +228,7 @@ export const addFormSchema: FormSchema[] = [
       valueField: 'id',
     },
   },
-  {
-    field: 'jobCategoryId',
-    label: '兼任岗位等级',
-    component: 'ApiSelect',
-    componentProps: {
-      api: dictStore.getDictValueToCode,
-      params: { Code: 'part_time_job_level' },
-      labelField: 'value',
-      valueField: 'id',
-    },
-  },
+
   {
     field: 'facultySourceId',
     label: '教职工来源',
@@ -265,12 +254,20 @@ export const addFormSchema: FormSchema[] = [
   {
     field: 'highestEducation',
     label: '最高学历',
-    component: 'ApiSelect',
+    component: 'ApiCascader',
     componentProps: {
       api: dictStore.getDictValueToCode,
-      params: { Code: 'highest_education' },
+      initFetchParams: {
+        Code: 'highest_education',
+      },
+      dynamicFetch: false,
+      expandTrigger: 'hover',
+      childrenField: 'children',
       labelField: 'value',
       valueField: 'id',
+      isLeaf: (record) => {
+        return !record.children.length;
+      },
     },
   },
   {
@@ -287,23 +284,26 @@ export const addFormSchema: FormSchema[] = [
   {
     field: 'facultyCategory',
     label: '教职工类别',
-    component: 'ApiSelect',
+    component: 'ApiCascader',
     componentProps: {
       api: dictStore.getDictValueToCode,
-      params: { Code: 'faculty_category' },
+      initFetchParams: {
+        Code: 'faculty_category',
+      },
+      dynamicFetch: false,
+      expandTrigger: 'hover',
+      childrenField: 'children',
+      apiParamKey: 'id',
       labelField: 'value',
       valueField: 'id',
+      isLeaf: (record) => {
+        return !record.children.length;
+      },
     },
   },
   {
     field: 'mobileTelephone',
     label: '联系电话',
     component: 'InputNumber',
-  },
-
-  {
-    field: 'remark',
-    label: '备注',
-    component: 'Input',
   },
 ];
