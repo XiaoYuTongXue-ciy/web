@@ -4,9 +4,15 @@
       <template #toolbar>
         <div class="wrap">
           <div class="wrap-box">
-            <BasicUpload :maxSize="20" :maxNumber="10" @change="handleChange" :api="uploadFile" />
+            <BasicUpload
+              :maxSize="20"
+              :maxNumber="10"
+              @change="handleChange"
+              :api="uploadApi"
+              :value="fileList"
+            />
             <a-button type="primary" class="export" @click="getExportData"> 导出 </a-button>
-            <a-button type="primary" class="download"> 模板下载 </a-button>
+            <a-button type="primary" class="download" @cick="getDownload"> 模板下载 </a-button>
           </div>
         </div>
         <a-button type="primary" @click="handleCreate"> 新增学生行规范 </a-button>
@@ -38,11 +44,18 @@
 </template>
 <script setup>
   import { BasicTable, useTable, TableAction } from '@/components/Table';
-  import { getPageInfo, deleteItem } from '@/api/studentcodecfconduct';
+  import {
+    getPageInfo,
+    deleteItem,
+    getExport,
+    uploadApi,
+    getSysFile,
+  } from '@/api/studentcodecfconduct';
   import { BasicUpload } from '/@/components/Upload';
   import { downloadByData } from '/@/utils/file/download';
 
   import { useDrawer } from '@/components/Drawer';
+  import { useLoading } from '@/components/Loading';
   import DetailDrawer from './detailDrawer.vue';
 
   import { columns, searchFormSchema } from './config';
@@ -51,6 +64,12 @@
 
   const { notification } = useMessage();
   let UploadIds = [];
+
+  const fileList = ref();
+
+  const [openFullLoading, closeFullLoading] = useLoading({
+    tip: '下载中...',
+  });
 
   const [registerDrawer, { openDrawer }] = useDrawer();
   const [registerTable, { reload }] = useTable({
@@ -116,16 +135,32 @@
 
   // 导出
   async function getExportData() {
+    openFullLoading();
     const uniqueArray = [...new Set(UploadIds)];
     const data = await getExport({ listId: uniqueArray });
     // data 为接口返回文件流数据，如果你的接口嵌套一层那就逐层去取
     UploadIds = [];
     const currentTime = dayjs();
     const formattedTime = currentTime.format('YYYYMMDDHHmmss');
+
     downloadByData(data, `教材${formattedTime}.xlsx`);
+    closeFullLoading();
   }
-  const handleChange = (list) => {
-    createMessage.info(`已上传文件${JSON.stringify(list)}`);
+
+  // 模板导出
+  const getDownload = async () => {
+    openFullLoading();
+    const data = await getSysFile({
+      Code: 'TemplateCode',
+    });
+    downloadByData(data, `教材模板.xlsx`);
+    closeFullLoading();
+  };
+
+  // 导入
+
+  const handleChange = (fileList) => {
+    console.log('fileList', fileList);
   };
 </script>
 
