@@ -4,7 +4,13 @@
       <template #toolbar
         ><div class="wrap">
           <div class="wrap-box">
-            <BasicUpload :maxSize="20" :maxNumber="10" @change="handleChange" :api="getInput" />
+            <BasicUpload
+              :maxSize="20"
+              :maxNumber="10"
+              @change="handleChange"
+              :api="uploadApi"
+              :value="fileList"
+            />
             <a-button type="primary" class="export" @click="getExportData"> 导出 </a-button>
             <a-button type="primary" class="download" @clic="getDownload"> 模板下载 </a-button>
           </div>
@@ -42,18 +48,26 @@
     getPageInfo,
     deleteItem,
     getExport,
-    getInput,
+    uploadApi,
     getSysFile,
   } from '@/api/studentscholarship';
 
   import { useDrawer } from '@/components/Drawer';
+  import { useLoading } from '@/components/Loading';
   import DetailDrawer from './detailDrawer.vue';
 
   import { columns, searchFormSchema } from './config';
   import { useMessage } from '@/hooks/web/useMessage';
 
   const { notification } = useMessage();
+
   let UploadIds = [];
+
+  const fileList = ref();
+
+  const [openFullLoading, closeFullLoading] = useLoading({
+    tip: '下载中...',
+  });
 
   const [registerDrawer, { openDrawer }] = useDrawer();
   const [registerTable, { reload }] = useTable({
@@ -119,20 +133,32 @@
 
   // 导出
   async function getExportData() {
+    openFullLoading();
     const uniqueArray = [...new Set(UploadIds)];
     const data = await getExport({ listId: uniqueArray });
     // data 为接口返回文件流数据，如果你的接口嵌套一层那就逐层去取
     UploadIds = [];
     const currentTime = dayjs();
     const formattedTime = currentTime.format('YYYYMMDDHHmmss');
+
     downloadByData(data, `教材${formattedTime}.xlsx`);
+    closeFullLoading();
   }
+
   // 模板导出
   const getDownload = async () => {
+    openFullLoading();
     const data = await getSysFile({
       Code: 'TemplateCode',
     });
     downloadByData(data, `教材模板.xlsx`);
+    closeFullLoading();
+  };
+
+  // 导入
+
+  const handleChange = (fileList) => {
+    console.log('fileList', fileList);
   };
 </script>
 

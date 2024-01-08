@@ -11,9 +11,6 @@
               :api="uploadApi"
               :value="fileList"
             />
-            <!-- <a-upload>
-              <a-button @click="onChange">点击上传</a-button>
-            </a-upload> -->
             <a-button type="primary" class="export" @click="getExportData"> 导出 </a-button>
             <a-button type="primary" class="download" @click="getDownload"> 模板下载 </a-button>
           </div>
@@ -66,13 +63,14 @@
   import { useMessage } from '@/hooks/web/useMessage';
   import dayjs from 'dayjs';
 
-  const fileList = ref();
-
   const { notification } = useMessage();
+
+  const fileList = ref();
 
   const [openFullLoading, closeFullLoading] = useLoading({
     tip: '下载中...',
   });
+
   let UploadIds = [];
 
   const [registerDrawer, { openDrawer }] = useDrawer();

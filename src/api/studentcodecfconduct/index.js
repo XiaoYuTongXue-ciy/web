@@ -73,13 +73,15 @@ export const getExport = (params) => {
 };
 
 // 导入
-export const getInput = (params) => {
-  return defHttp.post({
-    url: Api.uploadFile,
+export const uploadApi = (params, onUploadProgress) => {
+  return defHttp.uploadFile(
+    {
+      url: `${BASEURL}/import`,
+      onUploadProgress,
+    },
     params,
-  });
+  );
 };
-
 // 模板
 export const getSysFile = (params) => {
   return defHttp.post(
